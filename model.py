@@ -26,7 +26,7 @@ def image_to_base64_data_uri(file_path):
 # --- Main Execution ---
 def main():
     """
-    Main function to orchestrate the batch processing of images using a VLLM.
+    Main function to orchestrate the batch processing of imag`es using a VLLM.
     """
     # Create output directory if it doesn't exist
     if not os.path.exists(OUTPUT_DIRECTORY):
@@ -37,7 +37,7 @@ def main():
     try:
         # Llava15ChatHandler is used for models with a multimodal projector
         chat_handler = Llava15ChatHandler(clip_model_path=MMPROJ_PATH, verbose=False)
-        
+    
         llm = Llama(
             model_path=MODEL_PATH,
             chat_handler=chat_handler,
