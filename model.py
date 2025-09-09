@@ -15,8 +15,8 @@ MMPROJ_PATH = r"C:\Users\17740\.lmstudio\models\lmstudio-community\gemma-3-12b-i
 # MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf"
 # MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF/mmproj-model-f16.gguf"
 # gemma-3-27b-it-GGUF
-#MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/gemma-3-27B-it-QAT-Q4_0.gguf"
-#MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/mmproj-model-f16.gguf"
+# MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/gemma-3-27B-it-QAT-Q4_0.gguf"
+# MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/mmproj-model-f16.gguf"
 # Directories for input and output
 INPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/image"
 OUTPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/metadata_output_gemma_27b"
