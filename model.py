@@ -8,18 +8,31 @@ import json
 # --- Configuration ---
 # Path to the main GGUF model file
 #gemma-3-12b-it-Q4_K_M.gguf
-MODEL_PATH = r"C:\Users\17740\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\gemma-3-12b-it-Q3_K_L.gguf"
-MMPROJ_PATH = r"C:\Users\17740\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\mmproj-model-f16.gguf"
+# MODEL_PATH = r"C:\Users\17740\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\gemma-3-12b-it-Q3_K_L.gguf"
+# MMPROJ_PATH = r"C:\Users\17740\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\mmproj-model-f16.gguf"
 
-# Qwen2.5-VL-7B-Instruct-GGUF
-# MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf"
-# MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF/mmproj-model-f16.gguf"
-# gemma-3-27b-it-GGUF
-#MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/gemma-3-27B-it-QAT-Q4_0.gguf"
-#MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/mmproj-model-f16.gguf"
+# Qwen2.5-VL-7B-Instruct-GGUF (Recommended - More Stable)
+MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf"
+MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF/mmproj-model-f16.gguf"
+
+# gemma-3-27b-it-GGUF (Larger model - may have stability issues)
+# MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/gemma-3-27B-it-QAT-Q4_0.gguf"
+# MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/mmproj-model-f16.gguf"
+
 # Directories for input and output
 INPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/image"
-OUTPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/metadata_output_gemma_27b"
+OUTPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/metadata_output_qwen25"
+
+# Detect model type and set appropriate parameters
+MODEL_TYPE = "qwen" if "Qwen" in MODEL_PATH else "gemma"
+if MODEL_TYPE == "gemma":
+    CTX_SIZE = 4096
+    MAX_TOKENS = 512
+    N_BATCH = 256
+else:  # qwen
+    CTX_SIZE = 2048  
+    MAX_TOKENS = 1024
+    N_BATCH = 512
 
 # --- Load the model once ---
 print("🧠 Loading VLLM model... (The first call is slightly slower.)")
@@ -27,8 +40,10 @@ chat_handler = Llava15ChatHandler(clip_model_path=MMPROJ_PATH, verbose=False)
 llm = Llama(
     model_path=MODEL_PATH,
     chat_handler=chat_handler,
-    n_ctx=2048,
+    n_ctx=CTX_SIZE,          # Dynamic context size based on model
     n_gpu_layers=-1,
+    n_batch=N_BATCH,         # Dynamic batch size
+    n_threads=4,             # Limit CPU threads for stability
     verbose=False
 )
 
@@ -44,34 +59,54 @@ def generate_metadata(image_path):
     """
     External API call: Input image_path, return JSON dictionary
     """
-    image_uri = image_to_base64_data_uri(image_path)
-    system_prompt = """
-    You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
-    The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), a one-sentence "summary", and the "document_type".
-    If a value cannot be found, use "Unknown".
-    Output ONLY the raw JSON object, without any other text or markdown.
-    """
-    user_prompt = "Please analyze this document image and extract its metadata."
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {
-            "role": "user",
-            "content": [
-                {"type": "image_url", "image_url": {"url": image_uri}},
-                {"type": "text", "text": user_prompt},
-            ],
-        },
-    ]
+    try:
+        image_uri = image_to_base64_data_uri(image_path)
+        system_prompt = """
+        You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
+        The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), a one-sentence "summary", and the "document_type".
+        If a value cannot be found, use "Unknown".
+        Output ONLY the raw JSON object, without any other text or markdown.
+        """
+        user_prompt = "Please analyze this document image and extract its metadata."
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image_url", "image_url": {"url": image_uri}},
+                    {"type": "text", "text": user_prompt},
+                ],
+            },
+        ]
 
-    # The response is enforced to be JSON only
-    response = llm.create_chat_completion(
-        messages=messages,
-        response_format={"type": "json_object"},
-        temperature=0.1
-    )
-    raw_json = response['choices'][0]['message']['content']
-    metadata = json.loads(raw_json)
-    return metadata
+        # The response is enforced to be JSON only
+        response = llm.create_chat_completion(
+            messages=messages,
+            response_format={"type": "json_object"},
+            temperature=0.1,
+            max_tokens=512,  # Limit tokens for Gemma-27B
+            stream=False     # Ensure non-streaming response
+        )
+        
+        if not response or 'choices' not in response or not response['choices']:
+            raise ValueError("Invalid response from model")
+            
+        raw_json = response['choices'][0]['message']['content']
+        if not raw_json:
+            raise ValueError("Empty response from model")
+            
+        metadata = json.loads(raw_json)
+        return metadata
+        
+    except Exception as e:
+        print(f"❌ Error in generate_metadata: {e}")
+        return {
+            "error": f"Model processing failed: {str(e)}",
+            "author": "Unknown",
+            "date": "Unknown", 
+            "summary": "Failed to process image",
+            "document_type": "Unknown"
+        }
 
 
 # --- Main Execution ---
