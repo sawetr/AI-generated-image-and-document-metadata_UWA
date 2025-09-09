@@ -7,14 +7,19 @@ import json
 
 # --- Configuration ---
 # Path to the main GGUF model file
-MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-12b-it-GGUF/gemma-3-12b-it-Q4_K_M.gguf" 
+#gemma-3-12b-it-Q4_K_M.gguf
+# MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-12b-it-GGUF/gemma-3-12b-it-Q4_K_M.gguf" 
+# MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-12b-it-GGUF/mmproj-model-f16.gguf"
 
-# Path to the multimodal projector file
-MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-12b-it-GGUF/mmproj-model-f16.gguf"
-
+# Qwen2.5-VL-7B-Instruct-GGUF
+# MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf"
+# MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF/mmproj-model-f16.gguf"
+# gemma-3-27b-it-GGUF
+MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/gemma-3-27B-it-QAT-Q4_0.gguf"
+MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/mmproj-model-f16.gguf"
 # Directories for input and output
 INPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/image"
-OUTPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/metadata_output"
+OUTPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/metadata_output_gemma_27b"
 
 # --- Helper Function to Encode Image ---
 def image_to_base64_data_uri(file_path):
@@ -26,7 +31,7 @@ def image_to_base64_data_uri(file_path):
 # --- Main Execution ---
 def main():
     """
-    Main function to orchestrate the batch processing of imag`es using a VLLM.
+    Main function to orchestrate the batch processing of images using a VLLM.
     """
     # Create output directory if it doesn't exist
     if not os.path.exists(OUTPUT_DIRECTORY):
@@ -37,7 +42,7 @@ def main():
     try:
         # Llava15ChatHandler is used for models with a multimodal projector
         chat_handler = Llava15ChatHandler(clip_model_path=MMPROJ_PATH, verbose=False)
-    
+        
         llm = Llama(
             model_path=MODEL_PATH,
             chat_handler=chat_handler,
