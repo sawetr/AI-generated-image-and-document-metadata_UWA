@@ -1,126 +1,88 @@
+# gridfs_demo.py
 from pymongo import MongoClient
 import gridfs
-import os
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 from PIL import Image
+import matplotlib.pyplot as plt
 import io
+import os
+from bson import ObjectId
 
-# --- Connection ---
-client = MongoClient('mongodb://localhost:27017/')
-db = client['image_database']
-
-# --- Create a GridFS object ---
-# This object will interact with the fs.files and fs.chunks collections
+# -----------------------------
+# Connect to the same DB used by run.py
+# -----------------------------
+client = MongoClient("mongodb://localhost:27017/")
+db = client["llm_app"]
 fs = gridfs.GridFS(db)
 
-def display_image_from_database(filename):
-    """
-    Retrieve and display an image from MongoDB GridFS
-    
-    Args:
-        filename (str): The filename of the image to retrieve and display
-    
-    Returns:
-        bool: True if image was found and displayed, False otherwise
-    """
-    try:
-        # Find the image by filename
-        grid_out = fs.find_one({'filename': filename})
-        
-        if grid_out:
-            # Read the image data
-            image_data = grid_out.read()
-            
-            # Convert bytes to PIL Image
-            image = Image.open(io.BytesIO(image_data))
-            
-            # Display using matplotlib
-            plt.figure(figsize=(10, 8))
-            plt.imshow(image)
-            plt.axis('off')  # Hide axes
-            plt.title(f"Retrieved Image: {filename}")
-            plt.tight_layout()
-            plt.show()
-            
-            print(f"✅ Successfully displayed '{filename}' from database")
-            return True
-        else:
-            print(f"❌ Image '{filename}' not found in database")
-            return False
-            
-    except Exception as e:
-        print(f"❌ Error displaying image '{filename}': {e}")
+def put_image_from_path(path: str, filename: str = None, content_type: str = None) -> str:
+    if not filename:
+        filename = os.path.basename(path)
+    if not content_type:
+        ext = os.path.splitext(filename)[1].lower()
+        content_type = {
+            ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
+            ".png": "image/png", ".gif": "image/gif", ".webp": "image/webp"
+        }.get(ext, "application/octet-stream")
+    with open(path, "rb") as f:
+        data = f.read()
+    _id = fs.put(data, filename=filename, content_type=content_type, metadata={"source": "gridfs_demo"})
+    print(f"Stored '{filename}' → GridFS _id={_id}")
+    return str(_id)
+
+def list_images():
+    print("\n📁 Images in GridFS:")
+    files = list(fs.find())
+    for f in files:
+        print(f"  - {f._id} | {f.filename} | {f.length} bytes | {f.upload_date}")
+    return files
+
+def save_from_gridfs(file_id: str, out_path: str):
+    grid_out = fs.get(ObjectId(file_id))
+    with open(out_path, "wb") as o:
+        o.write(grid_out.read())
+    print(f"Saved GridFS({file_id}) → {out_path}")
+
+def display_from_gridfs_by_filename(filename: str):
+    grid_out = fs.find_one({"filename": filename})
+    if not grid_out:
+        print(f"Not found: {filename}")
         return False
+    img = Image.open(io.BytesIO(grid_out.read()))
+    plt.figure(figsize=(8, 6))
+    plt.imshow(img)
+    plt.axis("off")
+    plt.title(f"GridFS: {filename}")
+    plt.tight_layout()
+    plt.show()
+    return True
 
-def list_images_in_database():
-    """
-    List all images stored in the GridFS database
-    
-    Returns:
-        list: List of filenames stored in the database
-    """
-    try:
-        # Get all files from GridFS
-        files = fs.find()
-        filenames = []
-        
-        print("📁 Images in database:")
-        for file in files:
-            filename = file.filename
-            file_size = file.length
-            upload_date = file.upload_date
-            filenames.append(filename)
-            print(f"  - {filename} (Size: {file_size} bytes, Uploaded: {upload_date})")
-        
-        return filenames
-        
-    except Exception as e:
-        print(f"❌ Error listing images: {e}")
-        return []
+def display_from_gridfs_by_id(file_id: str):
+    grid_out = fs.get(ObjectId(file_id))
+    img = Image.open(io.BytesIO(grid_out.read()))
+    plt.figure(figsize=(8, 6))
+    plt.imshow(img)
+    plt.axis("off")
+    plt.title(f"GridFS id: {file_id}")
+    plt.tight_layout()
+    plt.show()
 
-# --- Store the image using GridFS ---
-image_path = '/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/image/20250801_120107.jpg'
-image_name = os.path.basename(image_path)
+if __name__ == "__main__":
+    # --- Demo usage ---
+    # 1) (optional) store a local file into GridFS
+    image_folder = "C:/Users/capta/Documents/project/"
+    image_files = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))]
 
-try:
-    with open(image_path, 'rb') as image_file:
-        # The put method stores the file and returns its _id
-        file_id = fs.put(image_file, filename=image_name, content_type='image/jpeg')
-        print(f"🖼️  Successfully stored '{image_name}' using GridFS. File ID: {file_id}")
+    for fname in image_files:
+        full_path = os.path.join(image_folder, fname)
+        gid = put_image_from_path(full_path)
+        print(f"✅ Stored {fname} with GridFS ID: {gid}")
 
-except FileNotFoundError:
-    print(f"❌ Error: The file '{image_path}' was not found.")
-except Exception as e:
-    print(f"An error occurred: {e}")
+    # 2) List everything that exists already (including what run.py stored)
+    files = list_images()
 
+    # 3) Try displaying the first by filename if any
+    if files:
+        first_name = files[0].filename
+        display_from_gridfs_by_filename(first_name)
 
-# --- Retrieve the image from GridFS ---
-# You can find files by filename or any other metadata you stored
-grid_out = fs.find_one({'filename': image_name})
-
-if grid_out:
-    # The 'grid_out' object is a file-like object, you can read from it
-    output_data = grid_out.read()
-    
-    # Write the data to a new file
-    with open('retrieved_from_gridfs.jpg', 'wb') as output_file:
-        output_file.write(output_data)
-    print("✅ Successfully retrieved the image from GridFS and saved it.")
-    
-    # Display the retrieved image
-    display_image_from_database(image_name)
-    
-else:
-    print(f"Could not find '{image_name}' in GridFS.")
-
-# --- List all images in database ---
-print("\n" + "="*50)
-available_images = list_images_in_database()
-
-# --- Demo: Display a specific image ---
-if available_images:
-    print(f"\n🖼️  Displaying the first available image...")
-    display_image_from_database(available_images[0])
-
-client.close()
+    client.close()
