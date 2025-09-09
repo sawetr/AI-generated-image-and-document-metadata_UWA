@@ -1,0 +1,14 @@
+# Web framework
+flask==3.0.3
+
+# Data handling
+pandas==2.2.2
+
+# AI model
+llama-cpp-python==0.2.90
+
+# (Optional) Image handling
+Pillow==10.4.0
+
+# (Optional) HTTP requests
+requests==2.32.3

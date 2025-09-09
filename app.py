@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, send_file
 import os
 import pandas as pd
 import uuid
-from model import model 
+# from model import model 
 
 #A simple Flask web app to upload multiple images/documents, process them
 #(currently dummy metadata, placeholder for AI model), and display results in JSON and CSV formats with download options.
