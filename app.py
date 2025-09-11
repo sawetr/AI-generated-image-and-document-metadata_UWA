@@ -5,7 +5,11 @@ import uuid
 import csv
 import requests
 import pandas as pd
-from model import generate_metadata
+import json
+from llama_cpp import Llama
+from llama_cpp.llama_chat_format import Llava15ChatHandler
+import base64
+
 
 # ----------------- Basic settings -----------------
 app = Flask(__name__)
@@ -15,6 +19,61 @@ BATCH_SIZE = 10
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(RESULTS_FOLDER, exist_ok=True)
+
+# ----------------- model path -----------------
+#gemma-3-12b-it-Q4_K_M.gguf
+MODEL_PATH = r"C:\Users\17740\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\gemma-3-12b-it-Q3_K_L.gguf"
+MMPROJ_PATH = r"C:\Users\17740\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\mmproj-model-f16.gguf"
+
+
+chat_handler = Llava15ChatHandler(clip_model_path=MMPROJ_PATH, verbose=False)
+llm = Llama(
+    model_path=MODEL_PATH,
+    chat_handler=chat_handler,
+    n_ctx=8197,
+    n_gpu_layers=-1,
+    verbose=False
+)
+
+# --- Helper Function to Encode Image ---
+def image_to_base64_data_uri(file_path):
+    """Reads an image file and converts it to a base64 data URI."""
+    with open(file_path, "rb") as img_file:
+        encoded_string = base64.b64encode(img_file.read()).decode("utf-8")
+        return f"data:image/png;base64,{encoded_string}"
+    
+def generate_metadata(image_path):
+    """
+    External API call: Input image_path, return JSON dictionary
+    """
+    image_uri = image_to_base64_data_uri(image_path)
+    system_prompt = """
+    You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
+    The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), a one-sentence "summary", and the "document_type".
+    If a value cannot be found, use "Unknown".
+    Output ONLY the raw JSON object, without any other text or markdown.
+    """
+    user_prompt = "Please analyze this document image and extract its metadata."
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {
+            "role": "user",
+            "content": [
+                {"type": "image_url", "image_url": {"url": image_uri}},
+                {"type": "text", "text": user_prompt},
+            ],
+        },
+    ]
+
+    # The response is enforced to be JSON only
+    response = llm.create_chat_completion(
+        messages=messages,
+        response_format={"type": "json_object"},
+        temperature=0.1
+    )
+    raw_json = response['choices'][0]['message']['content']
+    metadata = json.loads(raw_json)
+    return metadata
 
 # ----------------- Link to the AI model (LM Studio/OpenAI-compatible) -----------------
 def call_ai_model(image_path: str):
@@ -120,5 +179,4 @@ def api_results_json(job_id):
     return send_file(path, mimetype="application/json")
 
 if __name__ == '__main__':
-    # default port 5000 to match your teammate's habit
-    app.run(debug=True, port=5001)
+    app.run(debug=True, use_reloader=False, port=5000)
