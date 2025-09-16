@@ -8,6 +8,8 @@ import pandas as pd
 import json
 from llama_cpp import Llama
 from llama_cpp.llama_chat_format import Llava15ChatHandler
+from pymongo import MongoClient
+from datetime import datetime
 import base64
 
 
@@ -22,18 +24,23 @@ os.makedirs(RESULTS_FOLDER, exist_ok=True)
 
 # ----------------- model path -----------------
 #gemma-3-12b-it-Q4_K_M.gguf
-MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/gemma-3-27B-it-QAT-Q4_0.gguf"
-MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/mmproj-model-f16.gguf"
+MODEL_PATH = r"C:\Users\capta\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\gemma-3-12b-it-Q4_K_M.gguf"
+MMPROJ_PATH = r"C:\Users\capta\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\mmproj-model-f16.gguf"
 
 
 chat_handler = Llava15ChatHandler(clip_model_path=MMPROJ_PATH, verbose=False)
 llm = Llama(
     model_path=MODEL_PATH,
     chat_handler=chat_handler,
-    n_ctx=8197,
+    n_ctx=2048,
     n_gpu_layers=-1,
     verbose=False
 )
+
+# MongoDB connection
+client = MongoClient("mongodb://localhost:27017/")
+db = client["llm_app"]
+results_collection = db["json_results"]
 
 # --- Helper Function to Encode Image ---
 def image_to_base64_data_uri(file_path):
@@ -137,29 +144,28 @@ def upload():
                 metadata = {"error": f"AI call failed: {e}"}
 
             results.append({
-                "filename": file_name,      # keep column names friendly for the results table
-                "batch": batch_idx,
-                "metadata": metadata
+                "filename": file_name,
+                "author": metadata.get("author"),
+                "date": metadata.get("date"),
+                "summary": metadata.get("summary"),
+                "document_type": metadata.get("document_type")
             })
 
     # 3) persist results (CSV + JSON) under results/ with job_id for download
-    df = pd.DataFrame(results)
-    csv_name = f"{job_id}_results.csv"
-    json_name = f"{job_id}_results.json"
-    csv_path = os.path.join(RESULTS_FOLDER, csv_name)
-    json_path = os.path.join(RESULTS_FOLDER, json_name)
-    df.to_csv(csv_path, index=False)
-    df.to_json(json_path, orient="records", indent=2)
+    job_doc = {
+    "job_id": job_id,
+    "created_at": datetime.utcnow().isoformat(),
+    "results": results
+}
+    results_collection.insert_one(job_doc)
 
     # 4) render results page with table and download links
     return render_template(
         'results.html',
         job_id=job_id,
         results=results,
-        table=df.to_html(classes="table table-striped", index=False),
-        csv_file=csv_name,
-        json_file=json_name
-    )
+        table=pd.DataFrame(results).to_html(classes="table table-striped", index=False)
+)
 
 # Download endpoint (CSV/JSON)
 @app.route('/download/<filename>')
@@ -172,11 +178,22 @@ def download(filename):
 # Optional: quick API to fetch raw JSON (if frontend needs)
 @app.route('/api/jobs/<job_id>/results.json')
 def api_results_json(job_id):
-    json_name = f"{job_id}_results.json"
-    path = os.path.join(RESULTS_FOLDER, json_name)
-    if not os.path.exists(path):
+    doc = results_collection.find_one({"job_id": job_id}, {"_id": 0})
+    if not doc:
         return jsonify({"error": "not found"}), 404
-    return send_file(path, mimetype="application/json")
+    return jsonify(doc)
+
+@app.route('/download/<job_id>.csv')
+def download_csv(job_id):
+    doc = results_collection.find_one({"job_id": job_id}, {"_id": 0})
+    if not doc:
+        return jsonify({"error": "not found"}), 404
+
+    df = pd.DataFrame(doc["results"])
+    csv_path = os.path.join(RESULTS_FOLDER, f"{job_id}.csv")
+    df.to_csv(csv_path, index=False)
+
+    return send_file(csv_path, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False, port=5000)
