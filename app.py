@@ -30,7 +30,7 @@ chat_handler = Llava15ChatHandler(clip_model_path=MMPROJ_PATH, verbose=False)
 llm = Llama(
     model_path=MODEL_PATH,
     chat_handler=chat_handler,
-    n_ctx=8197,
+    n_ctx=2048,
     n_gpu_layers=-1,
     verbose=False
 )
@@ -49,7 +49,7 @@ def generate_metadata(image_path):
     image_uri = image_to_base64_data_uri(image_path)
     system_prompt = """
     You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
-    The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), a one-sentence "summary", and the "document_type".
+    The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), "Title" you can create one if you can't find any, a one-sentence "summary", and the "document_type".
     If a value cannot be found, use "Unknown".
     Output ONLY the raw JSON object, without any other text or markdown.
     """
@@ -137,9 +137,12 @@ def upload():
                 metadata = {"error": f"AI call failed: {e}"}
 
             results.append({
-                "filename": file_name,      # keep column names friendly for the results table
-                "batch": batch_idx,
-                "metadata": metadata
+                "filename": file_name,
+                "author": metadata.get("author"),
+                "Title": metadata.get("Title"),
+                "date": metadata.get("date"),
+                "summary": metadata.get("summary"),
+                "document_type": metadata.get("document_type")
             })
 
     # 3) persist results (CSV + JSON) under results/ with job_id for download

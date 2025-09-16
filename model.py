@@ -8,18 +8,20 @@ import json
 # --- Configuration ---
 # Path to the main GGUF model file
 #gemma-3-12b-it-Q4_K_M.gguf
-MODEL_PATH = r"C:\Users\17740\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\gemma-3-12b-it-Q3_K_L.gguf"
-MMPROJ_PATH = r"C:\Users\17740\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\mmproj-model-f16.gguf"
+MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-12b-it-GGUF/gemma-3-12b-it-Q4_K_M.gguf"
+MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-12b-it-GGUF/mmproj-model-f16.gguf"
 
 # Qwen2.5-VL-7B-Instruct-GGUF
 # MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF/Qwen2.5-VL-7B-Instruct-Q4_K_M.gguf"
 # MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/Qwen2.5-VL-7B-Instruct-GGUF/mmproj-model-f16.gguf"
+
 # gemma-3-27b-it-GGUF
 # MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/gemma-3-27B-it-QAT-Q4_0.gguf"
 # MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/mmproj-model-f16.gguf"
+
 # Directories for input and output
 INPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/image"
-OUTPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/metadata_output_gemma_27b"
+OUTPUT_DIRECTORY = "/Users/sawetr/Documents/UWA_project/AI-generated-image-and-document-metadata_UWA/metadata_output_gemma3-12b"
 
 # --- Load the model once ---
 print("🧠 Loading VLLM model... (The first call is slightly slower.)")
@@ -47,7 +49,7 @@ def generate_metadata(image_path):
     image_uri = image_to_base64_data_uri(image_path)
     system_prompt = """
     You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
-    The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), a one-sentence "summary", and the "document_type".
+    The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), "Title" you can create one if you can't find any, a one-sentence "summary", and the "document_type".
     If a value cannot be found, use "Unknown".
     Output ONLY the raw JSON object, without any other text or markdown.
     """
@@ -109,7 +111,7 @@ def main():
         # 2. Create the prompt for the VLLM
         system_prompt = """
         You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
-        The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), a one-sentence "summary", and the "document_type".
+        The metadata must be in a valid JSON format and include: "author","date" (in YYYY-MM-DD format),"Title", a one-sentence "summary", and the "document_type".
         If a value cannot be found, use "Unknown".
         Output ONLY the raw JSON object, without any other text or markdown.
         """
