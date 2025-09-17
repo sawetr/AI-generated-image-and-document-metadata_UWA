@@ -56,7 +56,7 @@ def generate_metadata(image_path):
     image_uri = image_to_base64_data_uri(image_path)
     system_prompt = """
     You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
-    The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), a one-sentence "summary", and the "document_type".
+    The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), "Title" you can create one if you can't find any, a one-sentence "summary", and the "document_type".
     If a value cannot be found, use "Unknown".
     Output ONLY the raw JSON object, without any other text or markdown.
     """
@@ -71,7 +71,7 @@ def generate_metadata(image_path):
             ],
         },
     ]
-
+ 
     # The response is enforced to be JSON only
     response = llm.create_chat_completion(
         messages=messages,
@@ -146,11 +146,11 @@ def upload():
             results.append({
                 "filename": file_name,
                 "author": metadata.get("author"),
+                "Title": metadata.get("Title"),
                 "date": metadata.get("date"),
                 "summary": metadata.get("summary"),
                 "document_type": metadata.get("document_type")
             })
-
     # 3) persist results (CSV + JSON) under results/ with job_id for download
     job_doc = {
     "job_id": job_id,
