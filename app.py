@@ -41,6 +41,7 @@ llm = Llama(
 client = MongoClient("mongodb://localhost:27017/")
 db = client["llm_app"]
 results_collection = db["json_results"]
+images_collection = db["images"]
 
 # --- Helper Function to Encode Image ---
 def image_to_base64_data_uri(file_path):
@@ -152,11 +153,21 @@ def upload():
                 "document_type": metadata.get("document_type")
             })
     # 3) persist results (CSV + JSON) under results/ with job_id for download
+    df = pd.DataFrame(results)
+
+    csv_name = f"{job_id}.csv"
+    json_name = f"{job_id}.json"
+
+    csv_path = os.path.join(RESULTS_FOLDER, csv_name)
+    json_path = os.path.join(RESULTS_FOLDER, json_name)
+
+    df.to_csv(csv_path, index=False)
+    df.to_json(json_path, orient="records", indent=2)
     job_doc = {
     "job_id": job_id,
     "created_at": datetime.utcnow().isoformat(),
     "results": results
-}
+    }
     results_collection.insert_one(job_doc)
 
     # 4) render results page with table and download links
@@ -164,7 +175,9 @@ def upload():
         'results.html',
         job_id=job_id,
         results=results,
-        table=pd.DataFrame(results).to_html(classes="table table-striped", index=False)
+        table=pd.DataFrame(results).to_html(classes="table table-striped", index=False),
+        csv_file=csv_name,
+        json_file=json_name
 )
 
 # Download endpoint (CSV/JSON)
