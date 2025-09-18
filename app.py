@@ -32,7 +32,7 @@ chat_handler = Llava15ChatHandler(clip_model_path=MMPROJ_PATH, verbose=False)
 llm = Llama(
     model_path=MODEL_PATH,
     chat_handler=chat_handler,
-    n_ctx=2048,
+    n_ctx=8194,
     n_gpu_layers=-1,
     verbose=False
 )
@@ -41,7 +41,7 @@ llm = Llama(
 client = MongoClient("mongodb://localhost:27017/")
 db = client["llm_app"]
 results_collection = db["json_results"]
-images_collection = db["images"]
+images_collection = db["image_link"]
 
 # --- Helper Function to Encode Image ---
 def image_to_base64_data_uri(file_path):
@@ -111,9 +111,19 @@ def save_batches(files, job_id: str):
         f.save(path)  # save to disk
         saved_paths.append(path)
 
-    # split into batches of BATCH_SIZE
+        images_collection.insert_one({
+            "job_id": job_id,
+            "filename": filename,
+        })
+
     batches = [saved_paths[i:i+BATCH_SIZE] for i in range(0, len(saved_paths), BATCH_SIZE)]
     return batches, job_dir
+
+
+def fetch_image_paths(job_id: str):
+    # Only fetch files from this job
+    docs = images_collection.find({"job_id": job_id}, {"_id": 0, "filename": 1})
+    return [os.path.join(UPLOAD_FOLDER, job_id, doc["filename"]) for doc in docs]
 
 # ----------------- Pages -----------------
 @app.route('/')
@@ -126,22 +136,26 @@ def index():
 def upload():
     uploaded_files = request.files.getlist("files")  # <input name="files" multiple>
     if not uploaded_files:
-        # keep the UX same: go back to index with a message or just render empty
         return render_template('index.html', error="No files selected.")
 
-    # 1) prepare job_id and save files in batches
+    # 1) prepare job_id and save files in MongoDB
     job_id = uuid.uuid4().hex
-    batches, job_dir = save_batches(uploaded_files, job_id)
+    save_batches(uploaded_files, job_id)  # saves files + inserts filenames in DB
 
-    # 2) loop through every image and call AI (you can swap to a mock if AI is not ready)
+    # 2) fetch back image paths from DB
+    image_paths = fetch_image_paths(job_id)
+
+    # re-split into batches of BATCH_SIZE
+    batches = [image_paths[i:i+BATCH_SIZE] for i in range(0, len(image_paths), BATCH_SIZE)]
+
     results = []
     for batch_idx, batch in enumerate(batches, start=1):
+        print(f"Processing batch {batch_idx} ({len(batch)} images)")
         for image_path in batch:
             file_name = os.path.basename(image_path)
             try:
-                metadata = call_ai_model(image_path)   # ← link to LM Studio here
+                metadata = call_ai_model(image_path)
             except Exception as e:
-                # keep going even if one image fails
                 metadata = {"error": f"AI call failed: {e}"}
 
             results.append({
@@ -152,33 +166,29 @@ def upload():
                 "summary": metadata.get("summary"),
                 "document_type": metadata.get("document_type")
             })
-    # 3) persist results (CSV + JSON) under results/ with job_id for download
+
+    # 3) persist results (CSV + JSON)
     df = pd.DataFrame(results)
-
-    csv_name = f"{job_id}.csv"
-    json_name = f"{job_id}.json"
-
-    csv_path = os.path.join(RESULTS_FOLDER, csv_name)
-    json_path = os.path.join(RESULTS_FOLDER, json_name)
-
+    csv_name, json_name = f"{job_id}.csv", f"{job_id}.json"
+    csv_path, json_path = os.path.join(RESULTS_FOLDER, csv_name), os.path.join(RESULTS_FOLDER, json_name)
     df.to_csv(csv_path, index=False)
     df.to_json(json_path, orient="records", indent=2)
-    job_doc = {
-    "job_id": job_id,
-    "created_at": datetime.utcnow().isoformat(),
-    "results": results
-    }
-    results_collection.insert_one(job_doc)
 
-    # 4) render results page with table and download links
+    results_collection.insert_one({
+        "job_id": job_id,
+        "created_at": datetime.utcnow().isoformat(),
+        "results": results
+    })
+
+    # 4) render results page
     return render_template(
         'results.html',
         job_id=job_id,
         results=results,
-        table=pd.DataFrame(results).to_html(classes="table table-striped", index=False),
+        table=df.to_html(classes="table table-striped", index=False),
         csv_file=csv_name,
         json_file=json_name
-)
+    )
 
 # Download endpoint (CSV/JSON)
 @app.route('/download/<filename>')
