@@ -147,7 +147,7 @@ def upload():
 
     # re-split into batches of BATCH_SIZE
     batches = [image_paths[i:i+BATCH_SIZE] for i in range(0, len(image_paths), BATCH_SIZE)]
-
+    
     results = []
     for batch_idx, batch in enumerate(batches, start=1):
         print(f"Processing batch {batch_idx} ({len(batch)} images)")
