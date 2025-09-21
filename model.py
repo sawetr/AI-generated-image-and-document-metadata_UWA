@@ -50,7 +50,7 @@ def generate_metadata(image_path):
     system_prompt = """
     You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
     The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), "Title" you can create one if you can't find any, a one-sentence "summary", and the "document_type".
-    If a value cannot be found, use "Unknown".
+    If a value cannot be found, use "Unknown",except "Title" that can be created.
     Output ONLY the raw JSON object, without any other text or markdown.
     """
     user_prompt = "Please analyze this document image and extract its metadata."
@@ -111,8 +111,8 @@ def main():
         # 2. Create the prompt for the VLLM
         system_prompt = """
         You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
-        The metadata must be in a valid JSON format and include: "author","date" (in YYYY-MM-DD format),"Title", a one-sentence "summary", and the "document_type".
-        If a value cannot be found, use "Unknown".
+        The metadata must be in a valid JSON format and include: "author","date" (in YYYY-MM-DD format),"Title" you can create one if you can't find any, a one-sentence "summary", and the "document_type".
+        If a value cannot be found, use "Unknown",except "Title" that can be created.
         Output ONLY the raw JSON object, without any other text or markdown.
         """
         
