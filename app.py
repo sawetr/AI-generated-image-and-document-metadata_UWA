@@ -222,4 +222,9 @@ def download_csv(job_id):
     return send_file(csv_path, as_attachment=True)
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     app.run(debug=True, use_reloader=False, port=5000)
+=======
+    # default port 5000 to match your teammate's habit
+    app.run(debug=True, port=5001)
+>>>>>>> yujie
