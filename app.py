@@ -219,6 +219,5 @@ def download_csv(job_id):
     return send_file(csv_path, as_attachment=True)
 
 if __name__ == '__main__':
-<<<<<<< HEAD
     app.run(debug=True, use_reloader=False, port=5000)
 
