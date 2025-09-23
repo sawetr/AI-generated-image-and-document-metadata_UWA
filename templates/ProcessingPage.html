@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Processing...</title>
+  <style>
+    .loader {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3498db;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 50px auto;
+    }
+    @keyframes spin { 0% {transform: rotate(0);} 100% {transform: rotate(360deg);} }
+    body { font-family: Arial; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="loader"></div>
+  <h2>Processing, please wait...</h2>
+
+  <script>
+    // keep checking if results are ready
+    setTimeout(() => { window.location.reload(); }, 2000);
+  </script>
+</body>
+</html>
+
+
