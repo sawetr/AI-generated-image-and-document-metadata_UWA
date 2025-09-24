@@ -13,8 +13,9 @@ Sawetr Suchit-rattanant
   - Checking the process
 
 Kenrick Lim
-  -Building MongoDB environment(app.py)
-  -Assisting in Processing Page(ProcessingPage.html)
+- Building MongoDB environment(app.py)
+- Assisting in Processing Page(ProcessingPage.html)
+  
   
 
 Setup Instructions:
