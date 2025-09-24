@@ -12,7 +12,10 @@ Sawetr Suchit-rattanant
   - Evaluation (Human evaluation)
   - Checking the process
 
-
+Kenrick Lim
+  -Building MongoDB environment(app.py)
+  -Assisting in Processing Page(ProcessingPage.html)
+  
 
 Setup Instructions:
 ## 1. Create a Virtual Environment
