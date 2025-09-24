@@ -1,5 +1,18 @@
 # AI-generated-image-and-document-metadata_UWA
-This is the github repo for group13
+
+Member:
+1. Sawetr Suchit-rattanant
+2. Kenrick Lim
+
+Contribution 
+
+Sawetr Suchit-rattanant 
+  - Design the project
+  - Model selection and testing( model.py, metadata_output folder)
+  - Evaluation (Human evaluation)
+  - Checking the process
+
+
 
 Setup Instructions:
 ## 1. Create a Virtual Environment
