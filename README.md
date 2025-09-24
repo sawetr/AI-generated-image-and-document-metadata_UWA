@@ -3,6 +3,10 @@
 Member:
 1. Sawetr Suchit-rattanant
 2. Kenrick Lim
+3. Arzoo Arzoo
+4. Yujie Yang
+5. Gideon Tan
+6. Yashveer Singh
 
 Contribution 
 
