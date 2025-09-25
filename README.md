@@ -20,7 +20,12 @@ Kenrick Lim
 - Building MongoDB environment(app.py)
 - Assisting in Processing Page(ProcessingPage.html)
   
-  
+Arzoo Arzoo
+- Added web functionality, developed the entire frontend (HTML and CSS) and built the project webpage(static and results folder)
+- Added requirements file and updated README for reproducibility
+- Implemented validation pipeline (validate.py) and integrated validation results into CSV reports (Validation_Reports folder)
+- Added fuzzy and embedding-based semantic similarity checks for title and summary
+- Iteratively tested, debugged, and refined validation workflow against ground truth
 
 Setup Instructions:
 ## 1. Create a Virtual Environment
