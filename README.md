@@ -4,7 +4,7 @@ Member:
 1. Sawetr Suchit-rattanant
 2. Kenrick Lim
 3. Arzoo Arzoo
-4. Yujie Yang
+4. Yujie YANG
 5. Gideon Tan
 6. Yashveer Singh
 
@@ -26,6 +26,10 @@ Arzoo Arzoo
 - Implemented validation pipeline (validate.py) and integrated validation results into CSV reports (Validation_Reports folder)
 - Added fuzzy and embedding-based semantic similarity checks for title and summary
 - Iteratively tested, debugged, and refined validation workflow against ground truth
+
+Yujie YANG
+- Linked the frontend with the AI model by writing app.py to handle image uploads, batch processing, and returning formatted metadata to the frontend.
+- Prepared ground truth files and joined the human evaluation for model assessment.
 
 Gideon Tan
 - Assisted in setting up MongoDB integrations (e.g. MongoDB Compass) through initial mocks of JSON metadata output through Streamlit.
