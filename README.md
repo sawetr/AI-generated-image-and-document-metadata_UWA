@@ -13,8 +13,9 @@ Contribution
 Sawetr Suchit-rattanant 
   - Design the project
   - Model selection and testing( model.py, metadata_output folder)
-  - Evaluation (Human evaluation)
-  - Checking the process
+  - Planning evaluation methods and checking the model. 
+  - Checking all the process to make sure it work as design.
+  - Provide the examples for each process.
 
 Kenrick Lim
 - Building MongoDB environment(app.py)
