@@ -36,6 +36,10 @@ Gideon Tan
 - Developed evaluation checks using various similarity measures (e.g. Cosine Similarity, BERT, SBERT) to evaluate each model's performance in processing the dataset.
 - Cross-validated the JSON metadata capture process and ensured that the data was captured in MongoDB.
 
+Yasveer Singh
+-Develop a processing page(ProcessignPage.html)
+-Test  all the dataset in processing  page and do the validation and evaluate each model's performance in processsing page.
+
 Setup Instructions:
 ## 1. Create a Virtual Environment
 
