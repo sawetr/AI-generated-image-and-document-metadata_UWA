@@ -28,8 +28,8 @@ Arzoo Arzoo
 - Iteratively tested, debugged, and refined validation workflow against ground truth
 
 Yujie YANG
-- Linked the frontend with the AI model by writing app.py to handle image uploads, batch processing, and returning formatted metadata to the frontend.
-- Prepared ground truth files and joined the human evaluation for model assessment.
+- Integrate the frontend upload process with the AI model, batching client images for metadata generation and returning the formatted output to the web interface. (app.py).
+- Created ground-truth files and contributed to human evaluation for model assessment.
 
 Gideon Tan
 - Assisted in setting up MongoDB integrations (e.g. MongoDB Compass) through initial mocks of JSON metadata output through Streamlit.
