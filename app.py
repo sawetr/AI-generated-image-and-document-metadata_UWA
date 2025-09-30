@@ -1,4 +1,4 @@
-# app.py (merged Ken version with progress + async)
+# app.py (merged Ken version with progress + async) lol
 from flask import Flask, render_template, request, send_file, jsonify, redirect, url_for
 import os
 import uuid
