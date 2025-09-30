@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Processing...</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100vh;
+      background: #fff;
+      font-family: Arial, sans-serif;
+      padding-top: 15vh;
+    }
+    .container {
+      text-align: center;
+    }
+    .spinner {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #3498db;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px auto;
+    }
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    #progress {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+ <div class="container">
+  <div class="spinner"></div>
+  <p>Processing, please wait...</p>
+  <p id="progress">0 / 0 files completed</p>
+</div>
+
+<script>
+  const jobId = "{{ job_id }}";
+
+  async function pollProgress() {
+    const res = await fetch(`/api/jobs/${jobId}/progress`);
+    const data = await res.json();
+
+    if (data.total > 0) {
+      document.getElementById("progress").textContent =
+        `${data.completed} / ${data.total} files completed`;
+    }
+
+    if (data.total > 0 && data.completed >= data.total) {
+      window.location.href = `/processing/${jobId}`;
+    }
+  }
+
+  setInterval(pollProgress, 2000);
+</script>
+
+</body>
+</html>
