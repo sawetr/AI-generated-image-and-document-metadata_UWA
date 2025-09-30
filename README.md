@@ -34,7 +34,6 @@ Yujie YANG
 
 Gideon Tan
 - Assisted in setting up MongoDB integrations (e.g. MongoDB Compass) through initial mocks of JSON metadata output through Streamlit.
-- Developed evaluation checks using various similarity measures (e.g. Cosine Similarity, BERT, SBERT) to evaluate each model's performance in processing the dataset.
 - Cross-validated the JSON metadata capture process and ensured that the data was captured in MongoDB.
 
 Yasveer Singh
