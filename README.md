@@ -13,8 +13,9 @@ Contribution
 Sawetr Suchit-rattanant 
   - Design the project
   - Model selection and testing( model.py, metadata_output folder)
-  - Evaluation (Human evaluation)
-  - Checking the process
+  - Planning evaluation methods and checking the model. 
+  - Checking all the process to make sure it work as design.
+  - Provide the examples for each process.
 
 Kenrick Lim
 - Building MongoDB environment(app.py)
@@ -33,30 +34,18 @@ Yujie YANG
 
 Gideon Tan
 - Assisted in setting up MongoDB integrations (e.g. MongoDB Compass) through initial mocks of JSON metadata output through Streamlit.
-- Developed evaluation checks using various similarity measures (e.g. Cosine Similarity, BERT, SBERT) to evaluate each model's performance in processing the dataset.
 - Cross-validated the JSON metadata capture process and ensured that the data was captured in MongoDB.
 
+Yasveer Singh
+
+-Develop a processing page(ProcessignPage.html)
+-Test  all the dataset in processing  page and do the validation and evaluate each model's performance in processsing page.
+
 Setup Instructions:
-## 1. Create a Virtual Environment
+## 1. DOCKER 
+build docker image from docker file
 
-Mac/Linux
-
-python3 -m venv venv
-source venv/bin/activate
-
-
-Windows (PowerShell)
-
-python -m venv venv
-.\venv\Scripts\activate
-
-## 2. Install Dependencies
-pip install flask pandas pillow
-
-## 3. Run the App
-python3 app.py
-
-## 4. Open in Browser
+## 2. Open in Browser
 
 Go to:
 
