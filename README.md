@@ -43,26 +43,10 @@ Yasveer Singh
 -Test  all the dataset in processing  page and do the validation and evaluate each model's performance in processsing page.
 
 Setup Instructions:
-## 1. Create a Virtual Environment
+## 1. DOCKER 
+build docker image from docker file
 
-Mac/Linux
-
-python3 -m venv venv
-source venv/bin/activate
-
-
-Windows (PowerShell)
-
-python -m venv venv
-.\venv\Scripts\activate
-
-## 2. Install Dependencies
-pip install flask pandas pillow
-
-## 3. Run the App
-python3 app.py
-
-## 4. Open in Browser
+## 2. Open in Browser
 
 Go to:
 
