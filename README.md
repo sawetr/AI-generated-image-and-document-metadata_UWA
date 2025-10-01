@@ -39,7 +39,7 @@ Gideon Tan
 Yasveer Singh
 
 -Develop a processing page(ProcessignPage.html)
--Test  all the dataset in processing  page and do the validation and evaluate each model's performance in processsing page.
+-Added in a additional web feature that shows up when process is hit
 
 Setup Instructions:
 ## 1. DOCKER 
