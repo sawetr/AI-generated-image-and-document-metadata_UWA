@@ -1,0 +1,36 @@
+# Exclude EVERYTHING except the essential files
+*
+
+# EXCLUDE what is needed
+!app.py
+!requirements.txt
+!templates/
+!static/
+
+# Exclude all relevant files we used for model evals and checking JSON output of Gemma 27B, 12B, Qwen2.5
+ARCHIVE/
+Client_Ground_Truth/
+image/
+metadata_output_gemma_27b/
+metadata_output_gemma3-12b/
+metadata_output_Owen2.5/
+Our_AI_Model_Results/
+untitled folder/
+uploads/  # Will be created automatically
+Validation_Reports/
+Validation_Reports_BERT/
+.dockerignore
+.gitignore
+BERT_v2.py
+metadata_Ground_Truth(in).csv
+model.py
+package.json
+README.md
+requirements_gid_full.txt
+SBERT_v2.py
+SBERT_v3.py
+validation.py
+*.pyc
+__pycache__/
+*.gguf
+*.mmproj

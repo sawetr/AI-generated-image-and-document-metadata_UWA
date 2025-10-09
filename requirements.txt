@@ -1,0 +1,5 @@
+flask==3.1.2
+pymongo==4.15.1
+pandas==2.3.2
+requests==2.32.5
+llama-cpp-python==0.3.16
