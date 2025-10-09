@@ -1,4 +1,3 @@
-# app.py (merged Ken version with progress + async) 
 from flask import Flask, render_template, request, send_file, jsonify, redirect, url_for
 import os
 import uuid
@@ -21,11 +20,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(RESULTS_FOLDER, exist_ok=True)
 
 # ----------------- model path -----------------
-# #gemma-3-12b-it-Q4_K_M.gguf
-# MODEL_PATH = r"C:\Users\capta\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\gemma-3-12b-it-Q4_K_M.gguf"
-# MMPROJ_PATH = r"C:\Users\capta\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\mmproj-model-f16.gguf"
-
-# gemma-3-27b-it-GGUF
 MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/gemma-3-27B-it-QAT-Q4_0.gguf"
 MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/mmproj-model-f16.gguf"
 
@@ -33,7 +27,7 @@ chat_handler = Llava15ChatHandler(clip_model_path=MMPROJ_PATH, verbose=False)
 llm = Llama(
     model_path=MODEL_PATH,
     chat_handler=chat_handler,
-    n_ctx=2048,
+    n_ctx=8194,
     n_gpu_layers=-1,
     verbose=False
 )
@@ -42,7 +36,7 @@ llm = Llama(
 client = MongoClient("mongodb://localhost:27017/")
 db = client["llm_app"]
 results_collection = db["json_results"]
-images_collection = db["images"]
+images_collection = db["image_link"]
 
 # ----------------- Helper: encode image -----------------
 def image_to_base64_data_uri(file_path):
@@ -98,40 +92,31 @@ def save_batches(files, job_id: str):
         f.save(path)
         saved_paths.append(path)
 
-    # split into batches of BATCH_SIZE
+        images_collection.insert_one({"job_id": job_id, "filename": filename})
+
     batches = [saved_paths[i:i+BATCH_SIZE] for i in range(0, len(saved_paths), BATCH_SIZE)]
     return batches, job_dir
 
-# ----------------- Pages -----------------
-@app.route('/')
-def index():
-    # render upload form
-    return render_template('index.html')
+def fetch_image_paths(job_id: str):
+    docs = images_collection.find({"job_id": job_id}, {"_id": 0, "filename": 1})
+    return [os.path.join(UPLOAD_FOLDER, job_id, doc["filename"]) for doc in docs]
 
-# Frontend Upload → Backend processing (batching + AI)
-@app.route('/upload', methods=['POST'])
-def upload():
-    uploaded_files = request.files.getlist("files")  # <input name="files" multiple>
-    if not uploaded_files:
-        # keep the UX same: go back to index with a message or just render empty
-        return render_template('index.html', error="No files selected.")
+# ----------------- Background processing -----------------
+def process_job(job_id):
+    image_paths = fetch_image_paths(job_id)
+    batches = [image_paths[i:i+BATCH_SIZE] for i in range(0, len(image_paths), BATCH_SIZE)]
 
-    # 1) prepare job_id and save files in batches
-    job_id = uuid.uuid4().hex
-    batches, job_dir = save_batches(uploaded_files, job_id)
-
-    # 2) loop through every image and call AI (you can swap to a mock if AI is not ready)
     results = []
     total = len(image_paths)
     completed = 0
 
     for batch_idx, batch in enumerate(batches, start=1):
+        print(f"Processing batch {batch_idx} ({len(batch)} images)")
         for image_path in batch:
             file_name = os.path.basename(image_path)
             try:
-                metadata = call_ai_model(image_path)   # ← link to LM Studio here
+                metadata = call_ai_model(image_path)
             except Exception as e:
-                # keep going even if one image fails
                 metadata = {"error": f"AI call failed: {e}"}
 
             results.append({
@@ -142,7 +127,6 @@ def upload():
                 "summary": metadata.get("summary"),
                 "document_type": metadata.get("document_type")
             })
-    # 3) persist results (CSV + JSON) under results/ with job_id for download
 
             completed += 1
             db["progress"].update_one(
@@ -152,33 +136,70 @@ def upload():
             )
 
     df = pd.DataFrame(results)
+    csv_name, json_name = f"{job_id}.csv", f"{job_id}.json"
+    df.to_csv(os.path.join(RESULTS_FOLDER, csv_name), index=False)
+    df.to_json(os.path.join(RESULTS_FOLDER, json_name), orient="records", indent=2)
 
-    csv_name = f"{job_id}.csv"
-    json_name = f"{job_id}.json"
+    results_collection.insert_one({
+        "job_id": job_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "results": results
+    })
 
-    csv_path = os.path.join(RESULTS_FOLDER, csv_name)
-    json_path = os.path.join(RESULTS_FOLDER, json_name)
+# ----------------- Routes -----------------
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-    df.to_csv(csv_path, index=False)
-    df.to_json(json_path, orient="records", indent=2)
-    job_doc = {
-    "job_id": job_id,
-    "created_at": datetime.utcnow().isoformat(),
-    "results": results
-    }
-    results_collection.insert_one(job_doc)
+@app.route('/upload', methods=['POST'])
+def upload():
+    uploaded_files = request.files.getlist("files")
+    if not uploaded_files:
+        return render_template('index.html', error="No files selected.")
 
-    # 4) render results page with table and download links
-    return render_template(
-        'results.html',
-        job_id=job_id,
-        results=results,
-        table=pd.DataFrame(results).to_html(classes="table table-striped", index=False),
-        csv_file=csv_name,
-        json_file=json_name
-)
+    job_id = uuid.uuid4().hex
+    save_batches(uploaded_files, job_id)
 
-# Download endpoint (CSV/JSON)
+    db["progress"].update_one(
+        {"job_id": job_id},
+        {"$set": {"total": len(uploaded_files), "completed": 0}},
+        upsert=True
+    )
+
+    threading.Thread(target=process_job, args=(job_id,)).start()
+    return redirect(url_for('processing', job_id=job_id))
+
+@app.route('/processing/<job_id>')
+def processing(job_id):
+    doc = results_collection.find_one({"job_id": job_id}, {"_id": 0})
+    if doc:
+        df = pd.DataFrame(doc["results"])
+        return render_template(
+            'results.html',
+            job_id=job_id,
+            results=doc["results"],
+            table=df.to_html(classes="table table-striped", index=False),
+            csv_file=f"{job_id}.csv",
+            json_file=f"{job_id}.json"
+        )
+    else:
+        return render_template("ProcessingPage.html", job_id=job_id)
+
+# ----------------- API -----------------
+@app.route('/api/jobs/<job_id>/progress')
+def api_progress(job_id):
+    doc = db["progress"].find_one({"job_id": job_id}, {"_id": 0})
+    if not doc:
+        return jsonify({"total": 0, "completed": 0})
+    return jsonify(doc)
+
+@app.route('/api/jobs/<job_id>/results.json')
+def api_results_json(job_id):
+    doc = results_collection.find_one({"job_id": job_id}, {"_id": 0})
+    if not doc:
+        return jsonify({"error": "not found"}), 404
+    return jsonify(doc)
+
 @app.route('/download/<filename>')
 def download(filename):
     path = os.path.join(RESULTS_FOLDER, filename)
@@ -188,7 +209,3 @@ def download(filename):
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False, port=5000)
-=======
-    # default port 5000 to match your teammate's habit
-    app.run(debug=True, port=5001)
->>>>>>> yujie
