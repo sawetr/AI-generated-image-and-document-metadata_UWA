@@ -1,5 +1,7 @@
 # app.py (merged Ken version with progress + async) lol
-from flask import Flask, render_template, request, send_file, jsonify, redirect, url_for
+from flask import Flask, render_template, request, send_file, jsonify, redirect, url_for,Response
+import io
+import csv
 import os
 import uuid
 import pandas as pd
@@ -14,11 +16,9 @@ import base64
 # ----------------- Basic settings -----------------
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
-RESULTS_FOLDER = 'results'
 BATCH_SIZE = 10
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-os.makedirs(RESULTS_FOLDER, exist_ok=True)
 
 # ----------------- model path -----------------
 MODEL_PATH = r"C:\Users\capta\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\gemma-3-12b-it-Q4_K_M.gguf"
@@ -136,11 +136,6 @@ def process_job(job_id):
                 upsert=True
             )
 
-    df = pd.DataFrame(results)
-    csv_name, json_name = f"{job_id}.csv", f"{job_id}.json"
-    df.to_csv(os.path.join(RESULTS_FOLDER, csv_name), index=False)
-    df.to_json(os.path.join(RESULTS_FOLDER, json_name), orient="records", indent=2)
-
     results_collection.insert_one({
         "job_id": job_id,
         "created_at": datetime.now(timezone.utc).isoformat(),
@@ -203,10 +198,36 @@ def api_results_json(job_id):
 
 @app.route('/download/<filename>')
 def download(filename):
-    path = os.path.join(RESULTS_FOLDER, filename)
-    if not os.path.exists(path):
-        return jsonify({"error": "file not found"}), 404
-    return send_file(path, as_attachment=True)
+    job_id, ext = os.path.splitext(filename)
+    doc = results_collection.find_one({"job_id": job_id}, {"_id": 0, "results": 1})
+    if not doc:
+        return jsonify({"error": "Job not found in MongoDB"}), 404
+
+    results = doc["results"]
+
+    if ext == ".json":
+        # ---- Serve JSON directly ----
+        json_data = json.dumps(results, indent=2)
+        return Response(
+            json_data,
+            mimetype="application/json",
+            headers={"Content-Disposition": f"attachment;filename={filename}"}
+        )
+
+    elif ext == ".csv":
+        # ---- Convert to CSV in-memory ----
+        output = io.StringIO()
+        df = pd.DataFrame(results)
+        df.to_csv(output, index=False)
+        output.seek(0)
+        return Response(
+            output.getvalue(),
+            mimetype="text/csv",
+            headers={"Content-Disposition": f"attachment;filename={filename}"}
+        )
+
+    else:
+        return jsonify({"error": "Unsupported file type"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False, port=5000)
