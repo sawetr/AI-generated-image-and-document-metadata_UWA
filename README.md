@@ -14,12 +14,15 @@ Sawetr Suchit-rattanant
   - Design the project
     - Select the component and tools for our application.
     - Design the flow of data.
-    - Research and build sample.
+    - comunicate with client about the design.
+    - Research and build sample code.
   - Model selection and testing( model.py, metadata_output folder)
-     - 
-  - Planning evaluation methods and checking the model. 
+    - Design data processing.
+    - Testing the model.
+    - Build the tools for integrate our data processing to our application. 
   - Checking all the process to make sure it work as design.
   - Provide the examples for each process.
+
 
 Kenrick Lim
 - Building MongoDB environment(app.py)
