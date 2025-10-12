@@ -12,7 +12,11 @@ Contribution
 
 Sawetr Suchit-rattanant 
   - Design the project
+    - Select the component and tools for our application.
+    - Design the flow of data.
+    - Research and build sample.
   - Model selection and testing( model.py, metadata_output folder)
+     - 
   - Planning evaluation methods and checking the model. 
   - Checking all the process to make sure it work as design.
   - Provide the examples for each process.
