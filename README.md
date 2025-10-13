@@ -27,9 +27,9 @@ Sawetr Suchit-rattanant
 Kenrick Lim
 - Building MongoDB environment(app.py)
   - Implemented the database connection and data flow logic between Flask and MongoDB using PyMongo.
-  - Configured local collections and created 3 logical folders(image_link,json_result,progress)to manage image batches and LLM-generated JSON metadata.
+  - Configured local collections and created 3 logical folders(image_link,json_result,progress) to manage image batches and LLM-generated JSON metadata.
 - Assisting in Processing Page(ProcessingPage.html)
-  - Create as status whetere the file has been processed out of N files.
+  - Create a status whether the file has been processed out of N files.
 
 Arzoo Arzoo
 - Added web functionality, developed the entire frontend (HTML and CSS) and built the project webpage(static and results folder)
