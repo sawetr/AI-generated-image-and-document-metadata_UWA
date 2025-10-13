@@ -26,8 +26,10 @@ Sawetr Suchit-rattanant
 
 Kenrick Lim
 - Building MongoDB environment(app.py)
+  - Implemented the database connection and data flow logic between Flask and MongoDB using PyMongo.
+  - Configured local collections and created 3 logical folders(image_link,json_result,progress)to manage image batches and LLM-generated JSON metadata.
 - Assisting in Processing Page(ProcessingPage.html)
-  
+  - Create as status whetere the file has been processed out of N files.
 Arzoo Arzoo
 - Added web functionality, developed the entire frontend (HTML and CSS) and built the project webpage(static and results folder)
 - Added requirements file and updated README for reproducibility
@@ -44,7 +46,6 @@ Gideon Tan
 - Cross-validated the JSON metadata capture process and ensured that the data was captured in MongoDB.
 
 Yasveer Singh
-
 -Develop a processing page(ProcessignPage.html)
 -Added in a additional web feature that shows up when process is hit
 
