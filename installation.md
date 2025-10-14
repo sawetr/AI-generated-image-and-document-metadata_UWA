@@ -9,7 +9,7 @@ A step-by-step walkthrough to installing and running the UWA Library Metadata Ge
 ---
 - Download the LLM Studio launcher that is compatible with your operating system. Run the launcher as you would a normal installer.
   
-- Click on the LLM Studio Shortcut to open the application. Upon initial boot up, it will return the dashboard below.
+- Click on the LLM Studio Shortcut to open the application. Upon initial start up, it will return the dashboard below.
 
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/llm1.png)
 
@@ -32,20 +32,31 @@ A step-by-step walkthrough to installing and running the UWA Library Metadata Ge
 
 - You can repeat this steps to download all three of the models you want (i.e. Gemma3 13B, Gemma3 27B, Qwen2.5 7B)
 
-- [Docker Desktop](https://lmstudio.ai/download](https://www.docker.com/products/docker-desktop/)) 
+[Docker Desktop](https://lmstudio.ai/download](https://www.docker.com/products/docker-desktop/)) 
 ---
-- After installing the models, you need to now install Docker Desktop to install MongoDB and run the Dockerfile.
-
+- After installing the models, you need to now install Docker Desktop to install MongoDB and run the Dockerfile. Upon initial start up,
+click on Docker Hub.
 
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker1.png)
 
+- In the search bar, query and click on the one that says "The Official MongoDB Community Server".
+
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker2.png)
 
+- Click on "Pull" and, after a few minutes, you will see a status message on the lower right indicating that it was a success.
+  
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker3-pull.png)
+
+- Click on **"Images"** and, in the row with the green circle, click "Run".
 
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker4.png)
 
+- It will redirect you to this interface where, in the "Host Port" field, specify **27017**. Then click "Run".
+
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker5-port.png)
+
+- Click on **"Containers"** and you should see your newly created contained (with the green circle icon showing that it is active)
+with the port successfully specified.
 
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker5success.png)
 
@@ -85,6 +96,7 @@ yarn add [package-name]
 # Using uv
 
 uv pip install [package-name]
+
 
 
 
