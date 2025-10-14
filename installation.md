@@ -129,57 +129,28 @@ curl http://localhost:5000/health
 
 
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/df4.png)
-Initially the status of "model_loaded" or Model loaded is **False** -- this is normal as it takes a while to load the model. Once the status has changed to **True** then you can finally,
-use the model.
+
+Initially the status of "model_loaded" or Model loaded is **False** -- this is normal as it takes a while to load the model. Once the status has changed to **True** 
+then you can finally, use the application.
 
 - Keep on monitoring the status using either of the two commands.
 
-
-
-
-![Description]()
-
-
-![Description]()
- 
-- **Operating System:** [e.g., Windows 10+, macOS 12+, Ubuntu 20.04+]
-- **Python:** [e.g., Version 3.9 or above]
-- **Node.js:** [e.g., Version 18 or above] <!-- Remove if not applicable -->
-- **Package Manager:** [e.g., pip, npm, yarn, uv]
-- **Other Dependencies:** [e.g., Git, Docker, Redis]
-
+# Using the Application
 ---
 
-##  Quick Installation
+Assuming you did not shut down your computer or stop the container, you can copy paste the port `http://127.0.0.1:5000/` to your search engine and it will return this
+interface
 
-### Method 1: Using Package Manager (Recommended for most users)
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/app1.png)
 
-<details>
-<summary>Qwen </summary>
+- Upload the image of the artifact you want to process, then click the "Process" button.
 
-<details>
-<summary>Gemma27 </summary>
+- After awhile, it will generate the metadata in a JSON format as the one shown below.
 
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/app2.png)
 
-```bash
-# Using pip
-pip install [package-name]
-
-# Using npm
-npm install [package-name]
-
-# Using yarn
-yarn add [package-name]
-
-# Using uv
-
-uv pip install [package-name]
-
-
-
-
-
-
+---
+This marks the end of the walkthrough, thank you.
 
 
 
