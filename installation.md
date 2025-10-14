@@ -60,6 +60,15 @@ with the port successfully specified.
 
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker5success.png)
 
+# Required Files
+
+For the next step, ensure you have the following files downloaded in the same folder.
+
+- **Dockerfile**
+- **.dockerignore**
+- **.env**
+- **requirements.txt**
+
 ![Description]()
 
 ![Description]()
@@ -96,6 +105,7 @@ yarn add [package-name]
 # Using uv
 
 uv pip install [package-name]
+
 
 
 
