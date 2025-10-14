@@ -31,6 +31,27 @@ A step-by-step walkthrough to installing and running the UWA Library Metadata Ge
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/llm5.png)
 
 - You can repeat this steps to download all three of the models you want (i.e. Gemma3 13B, Gemma3 27B, Qwen2.5 7B)
+
+- [Docker Desktop](https://lmstudio.ai/download](https://www.docker.com/products/docker-desktop/)) 
+---
+- After installing the models, you need to now install Docker Desktop to install MongoDB and run the Dockerfile.
+
+
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker1.png)
+
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker2.png)
+
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker3-pull.png)
+
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker4.png)
+
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker5-port.png)
+
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker5success.png)
+
+![Description]()
+
+![Description]()
  
 - **Operating System:** [e.g., Windows 10+, macOS 12+, Ubuntu 20.04+]
 - **Python:** [e.g., Version 3.9 or above]
@@ -64,6 +85,7 @@ yarn add [package-name]
 # Using uv
 
 uv pip install [package-name]
+
 
 
 
