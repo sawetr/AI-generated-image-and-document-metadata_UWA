@@ -35,6 +35,7 @@ Yujie YANG
 Gideon Tan
 - Developed and conducted human evaluation scoring methodology to serve as cross-validation of the programmed evaluation scores.
 - Created the Dockerfile and requirements package necessary to run a Docker-based implementation.
+- Created the comprehensive installation guide to install and run the Docker-based implementation.
 - Assisted in setting up MongoDB integrations (e.g. MongoDB Compass) through initial mocks of JSON metadata output through Streamlit.
 - Cross-validated the JSON metadata capture process and ensured that the data was captured in MongoDB.
 
@@ -44,18 +45,7 @@ Yasveer Singh
 -Develop a processing page(ProcessignPage.html)
 -Added in a additional web feature that shows up when process is hit
 
-Setup Instructions:
-## 1. DOCKER 
-build docker image from docker file
-
-## 2. Open in Browser
-
-Go to:
-
-http://127.0.0.1:5000
-
-
-Upload files → View JSON + CSV results → Download them.
+Click on this for the [comprehensive installation guide](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/Installation-Branch/installation.md) 
 
 # Project Structure & File Purpose
 AI-generated-image-and-document-metadata_UWA/
