@@ -30,6 +30,12 @@ A step-by-step walkthrough to installing and running the UWA Library Metadata Ge
 
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/llm5.png)
 
+For example, it will probably look like this
+
+```bash
+C:\Jodie\.lmstudio\models\lmstudio-community\Qwen2.5-VL-7B-Instruct-GGUF
+```
+
 - You can repeat this steps to download all three of the models you want (i.e. Gemma3 13B, Gemma3 27B, Qwen2.5 7B)
 
 [Docker Desktop](https://lmstudio.ai/download](https://www.docker.com/products/docker-desktop/)) 
@@ -151,6 +157,7 @@ interface
 
 ---
 This marks the end of the walkthrough, thank you!
+
 
 
 
