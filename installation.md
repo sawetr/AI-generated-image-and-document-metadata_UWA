@@ -61,7 +61,7 @@ with the port successfully specified.
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker5success.png)
 
 # Required Files
-
+---
 For the next step, ensure you have the following files downloaded in the same folder.
 
 - **Dockerfile**
@@ -69,7 +69,37 @@ For the next step, ensure you have the following files downloaded in the same fo
 - **.env**
 - **requirements.txt**
 
+Once that is done, we will now execute the Dockerfile to install and run the application.
+
+# Run Commands
+---
+
+- Open the Terminal and change to the directory (i.e. folder) that contains the required files.
+  
+```bash
+cd "C:\Jodie\Downloads"
+```
+
+- Type the following command to run the Dockerfile.
+  
+```bash
+docker build --no-cache --progress=plain -t uwa_artifact_processor .
+```
+
+The image is successfully created when you see a similar output appear on your terminal.
+
 ![Description]()
+
+- When the image is successfully created, you can now run the command to run the application.
+From the path we copied from the LLM Studio section, paste it to the inside the quotations.
+
+```bash
+docker run -d -p 5000:5000 `
+  -v "**Paste the path here**:/app/models" `
+  --env-file .env `
+  --name flask_app `
+  uwa_artifact_processor
+```
 
 ![Description]()
  
@@ -105,6 +135,7 @@ yarn add [package-name]
 # Using uv
 
 uv pip install [package-name]
+
 
 
 
