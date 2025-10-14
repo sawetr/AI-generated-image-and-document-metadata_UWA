@@ -111,16 +111,30 @@ docker run -d -p 5000:5000 `
   --name flask_app `
   uwa_artifact_processor
 ```
-- The image is successfully run when you are able to see this interface.
+- The image is successfully running when you are able to see this interface.
   
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/df2.png)
 
 
+- To verify if your model is running you can use two different commands
 
+```bash
+docker logs -f flask_app
+
+#OR
+
+curl http://localhost:5000/health
+```
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/df3.png)
 
 
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/df4.png)
+Initially the status of "model_loaded" or Model loaded is **False** -- this is normal as it takes a while to load the model. Once the status has changed to **True** then you can finally,
+use the model.
+
+- Keep on monitoring the status using either of the two commands.
+
+
 
 
 ![Description]()
@@ -160,6 +174,7 @@ yarn add [package-name]
 # Using uv
 
 uv pip install [package-name]
+
 
 
 
