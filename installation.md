@@ -150,7 +150,8 @@ interface
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/app2.png)
 
 ---
-This marks the end of the walkthrough, thank you.
+This marks the end of the walkthrough, thank you!
+
 
 
 
