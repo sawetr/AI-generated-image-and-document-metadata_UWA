@@ -1,14 +1,12 @@
-# Project Name Installation Guide
+# UWA Library Metadata Generation App
 
-<!-- Replace "Project Name" with your actual project name -->
-
-A clear, step-by-step guide to install and set up [Project Name].
+A step-by-step walkthrough to installing and running the UWA Library Metadata Generation App/
 
 ---
 
 ##  Prerequisites
 
-Before you begin, ensure you have met the following requirements:
+Before you run the application, it is crucial to follow these steps.
 
 - **Operating System:** [e.g., Windows 10+, macOS 12+, Ubuntu 20.04+]
 - **Python:** [e.g., Version 3.9 or above]
@@ -35,3 +33,4 @@ yarn add [package-name]
 # Using uv
 
 uv pip install [package-name]
+
