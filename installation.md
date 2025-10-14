@@ -51,7 +51,7 @@ click on Docker Hub.
 
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker4.png)
 
-- It will redirect you to this interface where, in the "Host Port" field, specify **27017**. Then click "Run".
+- It will redirect you to this interface where, in the "Host Port" field, specify `27017`. Then click "Run".
 
 ![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/docker5-port.png)
 
@@ -88,18 +88,43 @@ docker build --no-cache --progress=plain -t uwa_artifact_processor .
 
 The image is successfully created when you see a similar output appear on your terminal.
 
-![Description]()
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/df1.png)
 
 - When the image is successfully created, you can now run the command to run the application.
-From the path we copied from the LLM Studio section, paste it to the inside the quotations.
+From the path we copied from the LLM Studio section, paste it inside the quotations before the
+`:/app/models`.
 
 ```bash
 docker run -d -p 5000:5000 `
-  -v "**Paste the path here**:/app/models" `
+  -v "[PASTE PATH HERE]:/app/models" `
   --env-file .env `
   --name flask_app `
   uwa_artifact_processor
 ```
+
+For example
+
+```bash
+docker run -d -p 5000:5000 `
+  -v "C:\Jodie\.lmstudio\models\lmstudio-community\Qwen2.5-VL-7B-Instruct-GGUF:/app/models" `
+  --env-file .env `
+  --name flask_app `
+  uwa_artifact_processor
+```
+- The image is successfully run when you are able to see this interface.
+  
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/df2.png)
+
+
+
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/df3.png)
+
+
+![Description](https://github.com/sawetr/AI-generated-image-and-document-metadata_UWA/blob/main/install_imgs/df4.png)
+
+
+![Description]()
+
 
 ![Description]()
  
@@ -135,6 +160,7 @@ yarn add [package-name]
 # Using uv
 
 uv pip install [package-name]
+
 
 
 
