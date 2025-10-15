@@ -33,7 +33,7 @@ A step-by-step walkthrough to installing and running the UWA Library Metadata Ge
 For example, it will probably look like this
 
 ```bash
-C:\Jodie\.lmstudio\models\lmstudio-community\Qwen2.5-VL-7B-Instruct-GGUF
+C:\Jodi\.lmstudio\models\lmstudio-community\Qwen2.5-VL-7B-Instruct-GGUF
 ```
 
 - You can repeat this steps to download all three of the models you want (i.e. Gemma3 13B, Gemma3 27B, Qwen2.5 7B)
@@ -83,7 +83,7 @@ Once that is done, we will now execute the Dockerfile to install and run the app
 - Open the Terminal and change to the directory (i.e. folder) that contains the required files.
   
 ```bash
-cd "C:\Jodie\Downloads"
+cd "C:\Jodi\Downloads"
 ```
 
 - Type the following command to run the Dockerfile.
@@ -112,7 +112,7 @@ For example
 
 ```bash
 docker run -d -p 5000:5000 `
-  -v "C:\Jodie\.lmstudio\models\lmstudio-community\Qwen2.5-VL-7B-Instruct-GGUF:/app/models" `
+  -v "C:\Jodi\.lmstudio\models\lmstudio-community\Qwen2.5-VL-7B-Instruct-GGUF:/app/models" `
   --env-file .env `
   --name flask_app `
   uwa_artifact_processor
@@ -157,6 +157,7 @@ interface
 
 ---
 This marks the end of the walkthrough, thank you!
+
 
 
 
