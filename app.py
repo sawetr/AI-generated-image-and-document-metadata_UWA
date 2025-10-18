@@ -21,8 +21,9 @@ BATCH_SIZE = 10
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ----------------- model path -----------------
-MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/gemma-3-27B-it-QAT-Q4_0.gguf"
-MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/mmproj-model-f16.gguf"
+MODEL_PATH = r"C:\Users\capta\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\gemma-3-12b-it-Q4_K_M.gguf"
+MMPROJ_PATH = r"C:\Users\capta\.lmstudio\models\lmstudio-community\gemma-3-12b-it-GGUF\mmproj-model-f16.gguf"
+
 chat_handler = Llava15ChatHandler(clip_model_path=MMPROJ_PATH, verbose=False)
 llm = Llama(
     model_path=MODEL_PATH,
@@ -230,3 +231,4 @@ def download(filename):
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False, port=5000)
+
