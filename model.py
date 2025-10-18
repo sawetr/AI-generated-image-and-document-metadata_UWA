@@ -110,6 +110,7 @@ def main():
         system_prompt = """
         You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
         The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), a one-sentence "summary", and the "document_type".
+.
         If a value cannot be found, use "Unknown".
         Output ONLY the raw JSON object, without any other text or markdown.
         """

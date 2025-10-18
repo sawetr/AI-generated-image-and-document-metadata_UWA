@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Result: {{ rec.filename }}</title>
+</head>
+<body>
+  <h1>Upload saved</h1>
+  <p><a href="/">← Back</a></p>
+
+  <h2>{{ rec.filename }}</h2>
+  <p>Status: {{ rec.status }}</p>
+  {% if rec.prompt %}<p>Prompt: {{ rec.prompt }}</p>{% endif %}
+  {% if rec.user_id %}<p>User: {{ rec.user_id }}</p>{% endif %}
+  <p>Created: {{ rec.created_at }}</p>
+
+  {% if rec.filename.lower().endswith(('.png','.jpg','.jpeg','.gif','.webp')) %}
+    <img src="{{ url_for('uploaded_file', filename=rec.filename) }}" alt="" style="max-width: 600px;">
+  {% endif %}
+
+  <h3>Stored document</h3>
+  <pre>{{ rec | tojson(indent=2) }}</pre>
+</body>
+</html>
