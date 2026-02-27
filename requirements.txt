@@ -1,0 +1,5 @@
+flask
+pymongo
+pandas
+llama-cpp-python
+python-dotenv

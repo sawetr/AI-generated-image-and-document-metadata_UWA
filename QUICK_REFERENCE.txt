@@ -1,0 +1,88 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                     AI METADATA APPLICATION - QUICK REFERENCE               ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ START THE APPLICATION                                                     │
+└────────────────────────────────────────────────────────────────────────────┘
+
+1. Make sure Docker Desktop is running (check taskbar icon)
+2. Double-click: START_WINDOWS.bat
+3. Wait for "READY!" message
+4. Open browser: http://127.0.0.1:5000
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ STOP THE APPLICATION                                                      │
+└────────────────────────────────────────────────────────────────────────────┘
+
+Double-click: STOP_WINDOWS.bat
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ TROUBLESHOOTING                                                            │
+└────────────────────────────────────────────────────────────────────────────┘
+
+Docker not running?
+→ Open Docker Desktop from Start menu, wait for icon to show "running"
+
+Page won't load?
+→ Wait 30 seconds and refresh, or restart the app
+
+Model file not found?
+→ Make sure model/ folder contains both model files
+
+Slow performance?
+→ First run is always slower (downloads required)
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ SUPPORTED FILE FORMATS                                                     │
+└────────────────────────────────────────────────────────────────────────────┘
+
+• PNG
+• JPG / JPEG
+• WEBP
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ EXTRACTED METADATA FIELDS                                                  │
+└────────────────────────────────────────────────────────────────────────────┘
+
+• Author        - Who created the document
+• Title         - Document title or subject
+• Date          - Date of the document (YYYY-MM-DD)
+• Summary       - One-sentence description
+• Document Type - Type (invoice, report, letter, etc.)
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ WHERE ARE MY FILES?                                                         │
+└────────────────────────────────────────────────────────────────────────────┘
+
+Uploaded images:   uploads/ folder
+Results:            results/ folder
+Database:           Stored in Docker (preserved when stopped)
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ SYSTEM REQUIREMENTS                                                         │
+└────────────────────────────────────────────────────────────────────────────┘
+
+Windows 10/11 (64-bit)
+8GB RAM minimum (16GB+ recommended)
+20GB free disk space
+
+
+┌────────────────────────────────────────────────────────────────────────────┐
+│ NEED HELP?                                                                  │
+└────────────────────────────────────────────────────────────────────────────┘
+
+→ Check WINDOWS_SETUP_GUIDE.md for detailed instructions
+→ Look at error messages in the START_WINDOWS.bat window
+→ Contact development team with error details
+
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║                   Print this for quick reference!                          ║
+╚════════════════════════════════════════════════════════════════════════════╝

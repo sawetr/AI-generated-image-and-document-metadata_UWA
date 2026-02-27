@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: llm_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: llm_app
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: llm_app
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./model:/app/model
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+      - ./metadata_output:/app/metadata_output
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      - mongo_uri=mongodb://mongodb:27017/
+      - MODEL_PATH=model/gemma-3-27B-it-QAT-Q4_0.gguf
+      - MMPROJ_PATH=model/mmproj-model-f16.gguf
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:

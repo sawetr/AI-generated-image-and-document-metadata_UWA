@@ -12,8 +12,12 @@ from llama_cpp.llama_chat_format import Llava15ChatHandler
 from pymongo import MongoClient
 from datetime import datetime, timezone
 import base64
+from dotenv import load_dotenv
 
 # ----------------- Basic settings -----------------
+
+load_dotenv()
+
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
 BATCH_SIZE = 10
@@ -21,8 +25,8 @@ BATCH_SIZE = 10
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # ----------------- model path -----------------
-MODEL_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/gemma-3-27B-it-QAT-Q4_0.gguf"
-MMPROJ_PATH = "/Users/sawetr/.lmstudio/models/lmstudio-community/gemma-3-27B-it-qat-GGUF/mmproj-model-f16.gguf"
+MODEL_PATH = os.getenv("MODEL_PATH", "model/gemma-3-27B-it-QAT-Q4_0.gguf")
+MMPROJ_PATH = os.getenv("MMPROJ_PATH", "model/mmproj-model-f16.gguf")
 
 chat_handler = Llava15ChatHandler(clip_model_path=MMPROJ_PATH, verbose=False)
 llm = Llama(
@@ -34,7 +38,8 @@ llm = Llama(
 )
 
 # ----------------- MongoDB connection -----------------
-client = MongoClient("mongodb://localhost:27017/")
+mongo_uri = os.getenv("mongo_uri", "mongodb://localhost:27017/")
+client = MongoClient(mongo_uri)
 db = client["llm_app"]
 results_collection = db["json_results"]
 images_collection = db["image_link"]
@@ -49,7 +54,8 @@ def generate_metadata(image_path):
     image_uri = image_to_base64_data_uri(image_path)
     system_prompt = """
     You are an expert document analyst AI. Your task is to extract structured metadata from the document image provided.
-    The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), "Title" (create one if missing), a one-sentence "summary", and the "document_type".
+    The metadata must be in a valid JSON format and include: "author", "date" (in YYYY-MM-DD format), "Title" (create one if missing)
+    ,a one-sentence "summary", and the "document_type".
     If a value cannot be found, use "Unknown".
     Output ONLY the raw JSON object, without any other text or markdown.
     """
