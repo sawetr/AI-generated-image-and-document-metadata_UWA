@@ -43,6 +43,9 @@ Yujie YANG
 - Created ground-truth files and contributed to human evaluation for model assessment.
 
 Gideon Tan
+- Developed and conducted human evaluation scoring methodology to serve as cross-validation of the programmed evaluation scores.
+- Created the Dockerfile and requirements package necessary to run a Docker-based implementation.
+- Created the comprehensive installation guide to install and run the Docker-based implementation.
 - Assisted in setting up MongoDB integrations (e.g. MongoDB Compass) through initial mocks of JSON metadata output through Streamlit.
 - Cross-validated the JSON metadata capture process and ensured that the data was captured in MongoDB.
 
