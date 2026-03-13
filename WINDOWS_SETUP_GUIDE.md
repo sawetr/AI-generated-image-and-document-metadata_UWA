@@ -33,6 +33,10 @@
 - Results saved to your computer
 - All data stays local (privacy-friendly)
 
+## Install VS code
+Download from vs code website.
+## install GIT (Version control)
+Download from git website. 
 ---
 
 ## Step 1: Install Docker Desktop
